@@ -34,19 +34,8 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      [
-        "expo-splash-screen",
-        {
-          "backgroundColor": "#1a56db",
-          "image": "./assets/splash.png",
-          "imageWidth": 200
-        }
-      ]
-    ],
-    "extra": {
-      "eas": {
-        "projectId": "your-project-id-here"
-      }
-    }
+      "expo-font",
+      "expo-splash-screen"
+    ]
   }
 }

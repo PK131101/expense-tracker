@@ -5,6 +5,8 @@ workflows:
     environment:
       node: 20.11.0
       java: 17
+      vars:
+        PACKAGE_NAME: "com.expensetracker.app"
     triggering:
       events:
         - push
@@ -16,22 +18,25 @@ workflows:
         script: |
           npm install
 
+      - name: Expo prebuild
+        script: |
+          npx expo prebuild --platform android --clean --no-install
+
       - name: Set up local properties
         script: |
           echo "sdk.dir=$ANDROID_SDK_ROOT" > android/local.properties
 
-      - name: Expo prebuild (generate native Android files)
+      - name: Make gradlew executable
         script: |
-          npx expo prebuild --platform android --clean
+          chmod +x android/gradlew
 
       - name: Build Android APK
         script: |
           cd android
-          ./gradlew assembleRelease
+          ./gradlew assembleRelease --no-daemon
 
     artifacts:
       - android/app/build/outputs/apk/release/app-release.apk
-      - android/app/build/outputs/apk/release/app-release-unsigned.apk
 
     publishing:
       email:
