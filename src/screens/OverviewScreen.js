@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useApp } from '../context/AppContext';
-import { colors, fmt, catColors, shadow } from '../utils/theme';
+import { colors, fmt, catColors, shadow, shadowSm } from '../utils/theme';
 import { Card, SectionTitle, KpiGrid, KpiCard, BarRow, TxRow, EmptyState } from '../components/UI';
 
 export default function OverviewScreen({ navigation }) {
@@ -30,56 +30,79 @@ export default function OverviewScreen({ navigation }) {
       .sort((a, b) => b.pct - a.pct);
   }, [txs, budgets]);
 
-  const maxCat = catTotals[0]?.[1] || 1;
-
   return (
     <ScrollView style={S.screen} contentContainerStyle={S.content} showsVerticalScrollIndicator={false}>
-      <KpiGrid>
-        <KpiCard label="Income"         value={fmt(stats.inc)} color={colors.ok}     sub="This month" />
-        <KpiCard label="Expenses"       value={fmt(stats.exp)} color={colors.danger}  sub="This month" />
-        <KpiCard label="Net Balance"    value={fmt(stats.bal)} color={stats.bal >= 0 ? colors.ok : colors.danger} sub="Running" />
-        <KpiCard label="Invested"       value={fmt(stats.inv)} color={colors.inv}     sub="Committed" />
-        <KpiCard label="Carried Fwd"   value={fmt(stats.cf)}  color={colors.ok}     sub="Prev months" />
-      </KpiGrid>
+      {/* Hero balance card */}
+      <View style={[S.heroCard, shadow]}>
+        <Text style={S.heroLabel}>Net Balance</Text>
+        <Text style={[S.heroValue, { color: stats.bal >= 0 ? '#4ADE80' : '#FC8181' }]}>
+          {fmt(stats.bal)}
+        </Text>
+        <Text style={S.heroSub}>After all expenses this month</Text>
+        <View style={S.heroRow}>
+          <View style={S.heroStat}>
+            <Text style={S.heroStatLabel}>Income</Text>
+            <Text style={[S.heroStatVal, { color: '#4ADE80' }]}>{fmt(stats.inc)}</Text>
+          </View>
+          <View style={S.heroDivider} />
+          <View style={S.heroStat}>
+            <Text style={S.heroStatLabel}>Expenses</Text>
+            <Text style={[S.heroStatVal, { color: '#FC8181' }]}>{fmt(stats.exp)}</Text>
+          </View>
+          <View style={S.heroDivider} />
+          <View style={S.heroStat}>
+            <Text style={S.heroStatLabel}>Invested</Text>
+            <Text style={[S.heroStatVal, { color: '#C4B5FD' }]}>{fmt(stats.inv)}</Text>
+          </View>
+        </View>
+      </View>
 
+      {/* Spending by category */}
       {catTotals.length > 0 && (
         <Card>
           <SectionTitle>Spending by Category</SectionTitle>
           {catTotals.map(([cat, val]) => (
-            <BarRow key={cat} label={cat} value={val} max={maxCat} color={catColors[cat] || '#90a4ae'} />
+            <BarRow key={cat} label={cat} value={val} max={catTotals[0][1]} color={catColors[cat] || colors.other} />
           ))}
         </Card>
       )}
 
+      {/* Budget alerts */}
       {alerts.length > 0 && (
         <Card>
           <SectionTitle>Budget Alerts</SectionTitle>
           {alerts.map(a => (
             <View key={a.cat} style={S.alertRow}>
-              <View style={S.alertTop}>
-                <Text style={S.alertCat}>{a.cat}</Text>
-                <Text style={[S.alertPct, { color: a.pct >= 100 ? colors.danger : colors.warn }]}>{a.pct}%</Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
+                <Text style={{ fontSize: 13, color: colors.ink2, fontWeight: '500' }}>{a.cat}</Text>
+                <Text style={{ fontSize: 12, fontWeight: '600', color: a.pct >= 100 ? colors.danger : colors.warn }}>
+                  {a.pct}%
+                </Text>
               </View>
               <View style={S.barTrack}>
-                <View style={[S.barFill, { width: `${Math.min(a.pct, 100)}%`, backgroundColor: a.pct >= 100 ? colors.danger : colors.warn }]} />
+                <View style={[S.barFill, {
+                  width: `${Math.min(a.pct, 100)}%`,
+                  backgroundColor: a.pct >= 100 ? colors.danger : colors.warn,
+                }]} />
               </View>
-              <Text style={{ fontSize: 11, color: a.pct >= 100 ? colors.danger : colors.warn, marginTop: 3 }}>
-                {a.pct >= 100 ? `Over by ${fmt(a.spent - a.lim)}` : `${fmt(a.lim - a.spent)} remaining`}
+              <Text style={{ fontSize: 11, color: a.pct >= 100 ? colors.danger : colors.warn, marginTop: 4 }}>
+                {a.pct >= 100 ? `Over budget by ${fmt(a.spent - a.lim)}` : `${fmt(a.lim - a.spent)} remaining`}
               </Text>
             </View>
           ))}
         </Card>
       )}
 
+      {/* Recent transactions */}
       <Card>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
           <Text style={S.panelTitle}>Recent Transactions</Text>
           <TouchableOpacity onPress={() => navigation.navigate('ManageTab', { screen: 'Ledger' })}>
-            <Text style={{ fontSize: 12, color: colors.accent }}>View all →</Text>
+            <Text style={{ fontSize: 13, color: colors.accent, fontWeight: '500' }}>View all →</Text>
           </TouchableOpacity>
         </View>
         {txs.length === 0
-          ? <EmptyState text="No transactions yet. Tap ＋ to add one." />
+          ? <EmptyState icon="💸" text={'No transactions yet.\nTap + below to add your first one.'} />
           : txs.slice(0, 8).map(tx => <TxRow key={tx.id} tx={tx} />)}
       </Card>
     </ScrollView>
@@ -89,11 +112,22 @@ export default function OverviewScreen({ navigation }) {
 const S = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bg },
   content: { padding: 16, paddingBottom: 32 },
-  panelTitle: { fontSize: 10, fontWeight: '600', color: colors.ink, letterSpacing: 0.7, textTransform: 'uppercase' },
-  alertRow: { marginBottom: 10 },
-  alertTop: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 },
-  alertCat: { fontSize: 12, color: colors.ink2 },
-  alertPct: { fontSize: 12, fontWeight: '500' },
-  barTrack: { height: 5, backgroundColor: colors.surface3, borderRadius: 3, overflow: 'hidden' },
+  heroCard: {
+    backgroundColor: colors.header,
+    borderRadius: 20,
+    padding: 22,
+    marginBottom: 14,
+  },
+  heroLabel: { fontSize: 12, color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase', letterSpacing: 1, fontWeight: '600' },
+  heroValue: { fontSize: 38, fontWeight: '200', letterSpacing: -1, marginTop: 4, marginBottom: 4 },
+  heroSub: { fontSize: 12, color: 'rgba(255,255,255,0.4)', marginBottom: 20 },
+  heroRow: { flexDirection: 'row', backgroundColor: 'rgba(255,255,255,0.07)', borderRadius: 12, padding: 14 },
+  heroStat: { flex: 1, alignItems: 'center' },
+  heroStatLabel: { fontSize: 10, color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 },
+  heroStatVal: { fontSize: 15, fontWeight: '500' },
+  heroDivider: { width: 1, backgroundColor: 'rgba(255,255,255,0.12)', marginHorizontal: 4 },
+  panelTitle: { fontSize: 11, fontWeight: '700', color: colors.ink3, letterSpacing: 0.8, textTransform: 'uppercase' },
+  alertRow: { marginBottom: 12 },
+  barTrack: { height: 6, backgroundColor: colors.surface3, borderRadius: 3, overflow: 'hidden' },
   barFill: { height: '100%', borderRadius: 3 },
 });

@@ -1,36 +1,47 @@
 export const colors = {
-  bg: '#f5f6f8',
-  surface: '#ffffff',
-  surface2: '#f5f6f8',
-  surface3: '#edeef2',
-  ink: '#0f1117',
-  ink2: '#4a4f5e',
-  ink3: '#9098ab',
-  border: '#e2e4ea',
-  border2: '#c8ccd8',
-  accent: '#1a56db',
-  accentBg: '#e8efff',
-  ok: '#0d7a4e',
-  okBg: '#e6f7f0',
-  warn: '#b45309',
-  warnBg: '#fef3c7',
-  danger: '#c0392b',
-  dangerBg: '#fdf0ee',
-  inv: '#6d28d9',
-  invBg: '#ede9fe',
+  bg: '#F0F2F8',
+  surface: '#FFFFFF',
+  surface2: '#F7F8FC',
+  surface3: '#ECEEF5',
+  header: '#0F1B3D',
+  headerText: '#FFFFFF',
+  ink: '#0D1117',
+  ink2: '#3D4558',
+  ink3: '#8892A4',
+  border: '#E4E7F0',
+  border2: '#CBD0DE',
+  accent: '#1A56DB',
+  accentBg: '#EBF0FD',
+  accentLight: '#D6E4FF',
+  ok: '#0A7C4E',
+  okBg: '#E3F5EE',
+  okLight: '#C6EDD9',
+  warn: '#B45309',
+  warnBg: '#FEF3C7',
+  danger: '#C53030',
+  dangerBg: '#FEE8E8',
+  inv: '#6D28D9',
+  invBg: '#EDE9FE',
+  food: '#F97316',
+  transport: '#3B82F6',
+  bills: '#8B5CF6',
+  health: '#EC4899',
+  entertainment: '#10B981',
+  shopping: '#F59E0B',
+  salary: '#059669',
 };
 
 export const catColors = {
-  Food: '#ff9800', Transport: '#2196f3', Bills: '#9c27b0',
-  Health: '#e91e63', Entertainment: '#4caf50', Shopping: '#ffc107',
-  Other: '#90a4ae', Salary: '#0d7a4e', EMI: '#2196f3', Rent: '#9c27b0',
-  Freelance: '#0d7a4e',
+  Food: '#F97316', Transport: '#3B82F6', Bills: '#8B5CF6',
+  Health: '#EC4899', Entertainment: '#10B981', Shopping: '#F59E0B',
+  Other: '#6B7280', Salary: '#059669', EMI: '#3B82F6',
+  Rent: '#8B5CF6', Freelance: '#059669',
 };
 
 export const invTypeColors = {
-  SIP: '#6d28d9', 'Mutual Fund': '#1a56db', Stocks: '#0d7a4e',
-  FD: '#b45309', PPF: '#1565c0', NPS: '#880e4f',
-  Gold: '#f57f17', 'Real Estate': '#546e7a', Insurance: '#e65100', Other: '#90a4ae',
+  SIP: '#7C3AED', 'Mutual Fund': '#2563EB', Stocks: '#059669',
+  FD: '#D97706', PPF: '#1D4ED8', NPS: '#7C2D12',
+  Gold: '#B45309', 'Real Estate': '#4B5563', Insurance: '#DC2626', Other: '#6B7280',
 };
 
 export const fmt = n => '₹' + Math.round(n).toLocaleString('en-IN');
@@ -51,18 +62,26 @@ export const daysUntil = dateStr => {
 };
 
 export const monthlyHistory = {
-  '2026-03': { income: 85000, expense: 0,     invested: 10000 },
-  '2026-02': { income: 80000, expense: 39200,  invested: 15000 },
-  '2026-01': { income: 82000, expense: 45100,  invested: 10000 },
-  '2025-12': { income: 95000, expense: 61300,  invested: 20000 },
-  '2025-11': { income: 78000, expense: 42800,  invested: 10000 },
-  '2025-10': { income: 72000, expense: 38600,  invested: 10000 },
+  '2026-03': { income: 0, expense: 0, invested: 0 },
+  '2026-02': { income: 80000, expense: 39200, invested: 15000 },
+  '2026-01': { income: 82000, expense: 45100, invested: 10000 },
+  '2025-12': { income: 95000, expense: 61300, invested: 20000 },
+  '2025-11': { income: 78000, expense: 42800, invested: 10000 },
+  '2025-10': { income: 72000, expense: 38600, invested: 10000 },
 };
 
 export const shadow = {
-  shadowColor: '#000',
+  shadowColor: '#1A2440',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.08,
+  shadowRadius: 8,
+  elevation: 3,
+};
+
+export const shadowSm = {
+  shadowColor: '#1A2440',
   shadowOffset: { width: 0, height: 1 },
-  shadowOpacity: 0.06,
+  shadowOpacity: 0.05,
   shadowRadius: 4,
   elevation: 2,
 };
